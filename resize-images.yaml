@@ -1,4 +1,5 @@
 enabled: true
+adapter: imagick
 sizes:
   -
     width: 640

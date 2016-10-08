@@ -66,12 +66,29 @@ class ResizeImagesPlugin extends Plugin
                 $source_height = $size[1];
             }
 
-            $source_image = imagecreatefromjpeg($source);
+            $target_info = pathinfo($target);
             $dest_image = imagecreatetruecolor($width, $height);
-            imagecopyresampled($dest_image, $source_image, 0, 0, 0, 0, $width, $height, $source_width, $source_height);
+
+            if (preg_match('/jpe?g/', $target_info['extension'])) {
+                $source_image = imagecreatefromjpeg($source);
+                imagecopyresampled($dest_image, $source_image, 0, 0, 0, 0, $width, $height, $source_width, $source_height);
+
+                $result = imagejpeg($dest_image, $target, $quality);
+            } else if ($target_info['extension'] == 'png') {
+                $source_image = imagecreatefrompng($source);
+                $transparent = imagecolorallocatealpha($dest_image, 255, 255, 255, 127);
+
+                imagealphablending($dest_image, false);
+                imagesavealpha($dest_image, true);
+                imagefilledrectangle($dest_image, 0, 0, $width, $height, $transparent);
+                imagecopyresampled($dest_image, $source_image, 0, 0, 0, 0, $width, $height, $source_width, $source_height);
+
+                $result = imagepng($dest_image, $target, (int) ($quality / 100) * 9);
+            }
+
             imagedestroy($source_image);
-            $result = imagejpeg($dest_image, $target, $quality);
             imagedestroy($dest_image);
+
             return $result;
 
         } else {
