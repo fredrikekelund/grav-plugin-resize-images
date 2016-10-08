@@ -1,12 +1,12 @@
 name: Resize Images
 version: 0.1.0
 description: Generate responsive versions of images as they are uploaded
-icon: plug
+icon: picture-o
 author:
   name: Fredrik Ekelund
   email: fredrik@fredrik.computer
 homepage: https://github.com/fredrik-ekelund/grav-plugin-resize-images
-keywords: grav, plugin
+keywords: images, responsive, srcset
 bugs: https://github.com/fredrik-ekelund/grav-plugin-resize-images/issues
 docs: https://github.com/fredrik-ekelund/grav-plugin-resize-images/blob/develop/README.md
 license: MIT
@@ -24,6 +24,14 @@ form:
         0: Disabled
       validate:
         type: bool
+    adapter:
+      type: select
+      label: Image editing module
+      help: Imagick will produce better results, but isn't available in all environments
+      default: imagick
+      options:
+        imagick: Imagick
+        gd: GD
     sizes:
       type: list
       label: Image sizes
