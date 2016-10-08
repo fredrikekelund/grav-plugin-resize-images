@@ -139,8 +139,8 @@ class ResizeImagesPlugin extends Plugin
             }
 
             if ($count > 0) {
-                $count++;
-                rename($source_path, "{$info['dirname']}/{$info['filename']}@{$count}x.{$info['extension']}");
+                $original_index = $count + 1;
+                rename($source_path, "{$info['dirname']}/{$info['filename']}@{$original_index}x.{$info['extension']}");
                 rename("{$info['dirname']}/{$info['filename']}@1x.{$info['extension']}", $source_path);
             }
 
