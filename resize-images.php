@@ -60,8 +60,17 @@ class ResizeImagesPlugin extends Plugin
         $image = new \Imagick($source);
         $image->resizeImage($width, $height, \Imagick::FILTER_LANCZOS, 1);
         $image->setImageCompressionQuality($quality);
+        $format = strtolower($image->getImageFormat());
+
+        if ($format == 'jpeg') {
+            $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
+        } else if ($format == 'png') {
+            $image->setImageCompression(\Imagick::COMPRESSION_ZIP);
+        }
+
         $result = $image->writeImage($target);
         $image->clear();
+
         return (bool) $result;
     }
 
