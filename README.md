@@ -2,11 +2,11 @@
 
 > Resize images at upload time in the Grav admin
 
-Grav has some nifty built-in image editing features through the use of
-[Gregwar/Image](https://github.com/Gregwar/Image). What it doesn't yet support
-natively, though, is to automatically generate responsive image alternatives as
-images are uploaded. This plugin fixes that! It will automatically resize images
-that are uploaded through the [Grav
+Grav provides some nifty built-in image editing features through the use of
+[Gregwar/Image](https://github.com/Gregwar/Image). But there's no native support
+yet for automatically generating responsive image alternatives as images are
+uploaded in the admin. This plugin fixes that! It will automatically resize
+images that are uploaded through the [Grav
 admin](https://github.com/getgrav/grav-plugin-admin) to a set of predetermined
 widths. This means improved performance for Grav, and less manual resizing work
 for you. Win-win!
@@ -37,5 +37,4 @@ installation.
 ## CLI
 
 I'm aiming to add support for CLI commands to this plugin as well, to make it
-easy to generate responsive image alternatives for already uploaded images as
-well.
+easy to generate responsive image alternatives for already uploaded images.
