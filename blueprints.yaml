@@ -45,7 +45,7 @@ form:
           min: 1
         .quality:
           type: number
-          label: Quality
+          label: JPEG quality
           placeholder: 82
           min: 0
           max: 100
