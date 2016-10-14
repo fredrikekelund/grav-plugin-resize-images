@@ -5,10 +5,10 @@ icon: picture-o
 author:
   name: Fredrik Ekelund
   email: fredrik@fredrik.computer
-homepage: https://github.com/fredrik-ekelund/grav-plugin-resize-images
+homepage: https://github.com/fredrikekelund/grav-plugin-resize-images
 keywords: images, responsive, srcset
-bugs: https://github.com/fredrik-ekelund/grav-plugin-resize-images/issues
-docs: https://github.com/fredrik-ekelund/grav-plugin-resize-images/blob/develop/README.md
+bugs: https://github.com/fredrikekelund/grav-plugin-resize-images/issues
+docs: https://github.com/fredrikekelund/grav-plugin-resize-images/blob/develop/README.md
 license: MIT
 
 form:
