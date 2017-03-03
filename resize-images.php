@@ -139,13 +139,27 @@ class ResizeImagesPlugin extends Plugin
                 $this->resizeImage($source_path, $dest_path, $width, $height, $quality, $medium->width, $medium->height);
             }
 
+            $remove_original = $this->config->get('plugins.resize-images.remove_original');
+
             if ($count > 0) {
                 $original_index = $count + 1;
-                rename($source_path, "{$info['dirname']}/{$info['filename']}@{$original_index}x.{$info['extension']}");
+
+                if ($remove_original) {
+                    unlink($source_path);
+                } else {
+                    rename($source_path, "{$info['dirname']}/{$info['filename']}@{$original_index}x.{$info['extension']}");
+                }
+
                 rename("{$info['dirname']}/{$info['filename']}@1x.{$info['extension']}", $source_path);
             }
 
-            $this->grav['admin']->setMessage("Resized $filename $count times", 'info');
+            $message = "Resized $filename $count times";
+
+            if ($remove_original) {
+                $message .= ' (and removed the original image)';
+            }
+
+            $this->grav['admin']->setMessage($message, 'info');
         }
     }
 }

@@ -32,6 +32,17 @@ form:
       options:
         imagick: Imagick
         gd: GD
+    remove_original:
+      type: toggle
+      label: Remove original after resizing
+      help: By default, the original image will be preserved as the largest variant. Enable this to remove it instead.
+      highlight: 0
+      default: 0
+      options:
+        1: Enabled
+        0: Disabled
+      validate:
+        type: bool
     sizes:
       type: list
       label: Image sizes

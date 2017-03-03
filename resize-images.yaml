@@ -1,5 +1,6 @@
-enabled: true
+enabled: '1'
 adapter: imagick
+remove_original: '0'
 sizes:
   -
     width: 640
