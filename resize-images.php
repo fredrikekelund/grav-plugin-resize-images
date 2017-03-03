@@ -121,7 +121,12 @@ class ResizeImagesPlugin extends Plugin
                 continue;
             }
 
-            $source_path = $medium->path(false);
+            // We can't rely on the path returned from the image's own path
+            // method, since it points to the directory where the image is saved
+            // rather than where the original is stored. This means it could
+            // point to the global image cache directory.
+            $page_path = $page->path();
+            $source_path = "$page_path/$filename";
             $info = pathinfo($source_path);
             $count = 0;
 
