@@ -1,3 +1,9 @@
+# v0.2.1
+##  03/03/2017
+
+1. [](#new)
+    * Added option to enable removing of original image after it has been resized.
+
 # v0.2.0
 ##  03/03/2017
 
