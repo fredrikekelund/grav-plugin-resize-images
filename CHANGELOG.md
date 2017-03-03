@@ -1,3 +1,9 @@
+# v0.2.2
+##  03/03/2017
+
+1. [](#bugfix)
+    * Fixed issue that arose when `system.images.cache_all` was enabled with a more reliable method for determining image source paths.
+
 # v0.2.1
 ##  03/03/2017
 
