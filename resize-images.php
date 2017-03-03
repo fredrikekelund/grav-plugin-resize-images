@@ -35,6 +35,22 @@ class ResizeImagesPlugin extends Plugin
     }
 
     /**
+     * Determine whether a particular dependency is installed.
+     * @param  string $adapter Either 'gd' or 'imagick'
+     * @return bool
+     */
+    protected function dependencyCheck($adapter = 'gd')
+    {
+        if ($adapter === 'gd') {
+            return extension_loaded('gd');
+        }
+
+        if ($adapter === 'imagick') {
+            return class_exists('\Imagick');
+        }
+    }
+
+    /**
      * Determine which adapter is preferred and whether or not it's available.
      * Construct an instance of that adapter and return it.
      * @param  string $source - Source image path
@@ -42,18 +58,21 @@ class ResizeImagesPlugin extends Plugin
      */
     protected function getImageAdapter($source)
     {
-        $imagick_exists = class_exists('\Imagick');
-        $gd_exists = extension_loaded('gd');
+        $imagick_exists = $this->dependencyCheck('imagick');
+        $gd_exists = $this->dependencyCheck('gd');
 
-        $use_imagick = $imagick_exists ? $this->adapter == 'imagick' : false;
-        $use_gd = $gd_exists ? $this->adapter == 'gd' : false;
-
-        if ($use_imagick) {
-            return new ImagickAdapter($source);
-        } else if ($use_gd) {
-            return new GDAdapter($source);
-        } else {
-            return false;
+        if ($this->adapter === 'imagick') {
+            if ($imagick_exists) {
+                return new ImagickAdapter($source);
+            } else if ($gd_exists) {
+                return new GDAdapter($source);
+            }
+        } else if ($this->adapter === 'gd') {
+            if ($gd_exists) {
+                return new GDAdapter($source);
+            } else if ($imagick_exists) {
+                return new ImagickAdapter($source);
+            }
         }
     }
 
@@ -85,6 +104,11 @@ class ResizeImagesPlugin extends Plugin
 
         if (!$page instanceof Page) {
             return false;
+        }
+
+        if (!$this->dependencyCheck('imagick') && !$this->dependencyCheck('gd')) {
+            $this->grav['admin']->setMessage('Neither Imagick nor GD seem to be installed. The resize-images plugin needs one of them to work.', 'warning');
+            return;
         }
 
         $this->sizes = (array) $this->config->get('plugins.resize-images.sizes');
