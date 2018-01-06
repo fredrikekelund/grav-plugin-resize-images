@@ -36,6 +36,8 @@ be good!
 This plugin won't convert PNG's to JPEG's, so the quality number only applies to
 JPEG images.
 
+To generate variations of existing images go into the admin panel and re-save the pages where those images live. Every time a page is saved (whether it's new or old), this plugin will go through all images (again, whether they are new or old) in that page, check if they have responsive variants and generate new ones if necessary.
+
 ## Installation
 
 Download the [ZIP
