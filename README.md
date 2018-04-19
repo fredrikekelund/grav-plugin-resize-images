@@ -1,4 +1,4 @@
-This modified version is taking a different approach.
+This is a fork of the (Grav Resize Images Plugin)[https://github.com/fredrikekelund/grav-plugin-resize-images] with a slightly different approach.
 
 ## Problem solved
 Grav doesn't allow url parameters to generate resized images on the fly.
