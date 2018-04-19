@@ -61,3 +61,8 @@ form:
           min: 0
           max: 100
           default: 82
+        .name:
+          type: text
+          label: Name
+          placeholder: THUMB
+          default: ''

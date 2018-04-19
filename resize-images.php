@@ -9,6 +9,13 @@ require_once 'adapters/imagick.php';
 require_once 'adapters/gd.php';
 
 /**
+ * TODO :
+    - Separate create and delete actions
+    - Try to use onAdminAfterAddMedia/onAdminAfterDelMedia for on-the-fly actions
+    - Delete images when page is deleted ?
+ */
+
+/**
  * Class ResizeImagesPlugin
  * @package Grav\Plugin
  */
@@ -112,14 +119,19 @@ class ResizeImagesPlugin extends Plugin
         }
 
         $this->sizes = (array) $this->config->get('plugins.resize-images.sizes');
+        $this->sizesNames = array_map(function($size) {
+                return $size['name'];
+            }, $this->sizes);
+
         $this->adapter = $this->config->get('plugins.resize-images.adapter', 'imagick');
-
-        foreach ($page->media()->images() as $filename => $medium) {
+        $mediaCount = count($page->media()->images());
+        $allImages = $page->media()->images();
+        foreach ($allImages as $filename => $medium) {
+            $message = '';
             $srcset = $medium->srcset(false);
+            $sizesNames = implode('|', $this->sizesNames);
 
-            if ($srcset != '') {
-                continue;
-            }
+            // $message .= "{$filename} ";
 
             // We can't rely on the path returned from the image's own path
             // method, since it points to the directory where the image is saved
@@ -129,6 +141,52 @@ class ResizeImagesPlugin extends Plugin
             $source_path = "$page_path/$filename";
             $info = pathinfo($source_path);
             $count = 0;
+            $sizeRegexp = "/-({$sizesNames})\.{$info['extension']}$/";
+            $isResizedFile = preg_match($sizeRegexp, $filename);
+
+            // Stop here is it's a resized file
+            if ( $isResizedFile ) {
+                $hasOriginalFile = false;
+                $orginialFileName = preg_replace($sizeRegexp, ".{$info['extension']}", $filename);
+
+                // Try to find the original/non-resized file
+                foreach ($allImages as $subFilename => $subMedium) {
+                    if ( $orginialFileName == $subFilename )
+                    {
+                        $hasOriginalFile = true;
+                        break;
+                    }
+                }
+
+                // If the orignal file is missing then also delete this resized version
+                if ( !$hasOriginalFile ){
+                    unlink($source_path);
+                    $message .= "$filename - deleted, because original file was missing";
+                } else {
+                    // $message .= "$filename - skip, it's a resized file";
+                }
+
+                $this->grav['admin']->setMessage($message, 'info');
+                continue;
+            }
+
+            $hasResizedFiles = false;
+            $resizedFileRegexp = "/{$info['filename']}-({$sizesNames})\.{$info['extension']}$/";
+
+            foreach ($allImages as $subFilename => $subMedium) {
+                if ( preg_match($resizedFileRegexp, $subFilename) )
+                {
+                    $hasResizedFiles = true;
+                    break;
+                }
+            }
+
+            // Stop here if the file already has resized version(s)
+            if ( $hasResizedFiles ) {
+                // $message .= "$filename - skip, it already has resized file(s)";
+                $this->grav['admin']->setMessage($message, 'info');
+                continue;
+            }
 
             foreach ($this->sizes as $i => $size) {
                 if ($size['width'] >= $medium->width) {
@@ -136,11 +194,12 @@ class ResizeImagesPlugin extends Plugin
                 }
 
                 $count++;
-                $dest_path = "{$info['dirname']}/{$info['filename']}@{$count}x.{$info['extension']}";
+                $sizeName = $size['name'] ?: "SIZE{$count}";
+                $dest_path = "{$info['dirname']}/{$info['filename']}-{$sizeName}.{$info['extension']}";
                 $width = $size['width'];
                 $quality = $size['quality'];
                 $height = ($width / $medium->width) * $medium->height;
-
+        
                 $this->resizeImage($source_path, $dest_path, $width, $height, $quality, $medium->width, $medium->height);
             }
 
@@ -149,22 +208,18 @@ class ResizeImagesPlugin extends Plugin
             if ($count > 0) {
                 $original_index = $count + 1;
 
+                $message .= " Resized $filename $count times";
+
                 if ($remove_original) {
                     unlink($source_path);
-                } else {
-                    rename($source_path, "{$info['dirname']}/{$info['filename']}@{$original_index}x.{$info['extension']}");
+
+                    $message .= ' (and removed the original image)';
                 }
-
-                rename("{$info['dirname']}/{$info['filename']}@1x.{$info['extension']}", $source_path);
             }
 
-            $message = "Resized $filename $count times";
-
-            if ($remove_original) {
-                $message .= ' (and removed the original image)';
+            if ( $message && $message != '' ) {
+                $this->grav['admin']->setMessage($message, 'info');
             }
-
-            $this->grav['admin']->setMessage($message, 'info');
         }
     }
 }

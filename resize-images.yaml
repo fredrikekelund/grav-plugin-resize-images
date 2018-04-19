@@ -1,19 +1,24 @@
-enabled: '1'
+enabled: true
 adapter: imagick
-remove_original: '0'
+remove_original: false
 sizes:
   -
-    width: 640
-    quality: 92
-  -
-    width: 1000
+    width: 300
     quality: 90
+    name: THUMB
   -
-    width: 1500
-    quality: 87
+    width: 560
+    quality: 88
+    name: SMALL
   -
-    width: 2500
+    width: 770
     quality: 85
+    name: MEDIUM
   -
-    width: 3500
+    width: 1024
     quality: 82
+    name: LARGE
+  -
+    width: 1400
+    quality: 82
+    name: FULLSCREEN
