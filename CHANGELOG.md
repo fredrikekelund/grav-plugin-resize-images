@@ -1,3 +1,9 @@
+# v0.3.0
+##  19/04/2018
+
+1. [](#new)
+    * Use custom suffix names for pre-generated images
+
 # v0.2.2
 ##  03/03/2017
 
