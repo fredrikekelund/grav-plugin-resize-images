@@ -189,7 +189,7 @@ class ResizeImagesPlugin extends Plugin
             }
 
             foreach ($this->sizes as $i => $size) {
-                if ($size['width'] >= $medium->width) {
+                if ($size['width'] > $medium->width) {
                     continue;
                 }
 

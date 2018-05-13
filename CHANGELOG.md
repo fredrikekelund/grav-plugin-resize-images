@@ -1,3 +1,9 @@
+# v0.3.1
+##  13/05/2018
+
+1. [](#bugfix)
+    * Process resizing if original image width equal defined resized version width
+
 # v0.3.0
 ##  19/04/2018
 
