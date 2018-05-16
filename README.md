@@ -1,51 +1,34 @@
-# [Grav](http://getgrav.org) Resize Images Plugin
+This is a fork of the (Grav Resize Images Plugin)[https://github.com/fredrikekelund/grav-plugin-resize-images] with a slightly different approach.
 
-**This plugin is still young! If you encounter any issues, please don't hesitate
-to [report
-them](https://github.com/fredrikekelund/grav-plugin-resize-images/issues).**
+## Problem solved
+Grav doesn't allow url parameters to generate resized images on the fly.
 
-> Resize images at upload time in the Grav admin
+## Goal
+The final purpose of the plugin is to have different images sizes generated on page save.
+In my case, Grav is only used as an admin panel to generate a json file ready to be consumed by my front-end app (weither it's React, Angular, VueJs). So I wanted to have pre-generated images, with defined size/names (and not @{size}x names, who wasn't making sens), ready to be displayed in my app. 
+**note** : It isn't really intended to be used within Grav ecosystem as it's already handling smart caching and as lots of built-in fonctionnalities to display media files.
 
-Grav provides some nifty built-in features for editing images on the fly through
-the use of [Gregwar/Image](https://github.com/Gregwar/Image). But there's no
-support yet for automatically generating responsive image alternatives at upload
-time rather than at request time. This plugin fixes that! It will automatically
-resize images that are uploaded through the [Grav
-admin](https://github.com/getgrav/grav-plugin-admin) to a set of predetermined
-widths. This means improved performance for Grav, and less manual resizing work
-for you. Win-win! :tada:
+## Usage
+Out of the box the plugin is generating sizes : THUMB (300), SMALL (560), MEDIUM (770), LARGE (1024), FULLSCREEN (1400). But sizes and names can be changed/added/removed depending on your needs.
 
-Moreover, this plugin doesn't support just GD, but also Imagick, which means
-you'll get higher quality results than with the
-[ImageMedium#derivatives](https://learn.getgrav.org/content/media#sizes-with-media-queries)
-method that can be used to generate image alternatives in theme templates.
+On the front end-side you can now simply use `<img src="myimage-THUMB.ext" />`.
 
-Images that already have responsive alternatives won't be resized.
+### Extra
+It's great to use it in combinaison with the `resolution.min` attribute of your field options (in your `.yaml` file) to make sure the desired generated image size is available. There isn't any official documentation about it, but it's already available in Grav Admin Plugin `v1.7.3`.
 
-## Configuration
+For exemple, with the default sizes, if you want to have all sizes available, here is your options : 
+```yaml
+header.custom.image:
+    type: file
+    label: "Image"
+    destination: 'self@'
+    accept:
+        - image/*
+    resolution:
+        min:
+            width: 1400
+```
 
-You can customize the set of widths that your images will be resized to. By
-default they are 640, 1000, 1500, 2500, 3500 pixels in width. Images will never
-be scaled up, however, so only the widths that are smaller than the original
-image's will be used.
-
-For every width, you're also able to set the JPEG compression quality.  A good
-rule of thumb is to lower that number at higher widths - the result will still
-be good!
-
-This plugin won't convert PNG's to JPEG's, so the quality number only applies to
-JPEG images.
-
-To generate variations of existing images go into the admin panel and re-save the pages where those images live. Every time a page is saved (whether it's new or old), this plugin will go through all images (again, whether they are new or old) in that page, check if they have responsive variants and generate new ones if necessary.
-
-## Installation
-
-Download the [ZIP
-archive](https://github.com/fredrikekelund/grav-plugin-resize-images/archive/master.zip)
-from GitHub and extract it to the `user/plugins` directory in your Grav
-installation.
-
-## CLI
-
-I'm aiming to add support for CLI commands to this plugin as well, to make it
-easy to generate responsive image alternatives for already uploaded images.
+### Roadmap
+- Try to hook onAdminAfterAddMedia/onAdminAfterDelMedia events for on-the-fly actions instead of waiting for page save event (it's taking a while for saving mutliples images at once)
+- Add a `force regenerate all images` button for when changing plugin options (sizes and/or names)

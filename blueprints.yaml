@@ -1,14 +1,14 @@
 name: Resize Images
-version: 0.2.2
-description: Generate responsive versions of images as they are uploaded
+version: 0.3.1
+description: Generate multiple images sizes as they are uploaded
 icon: picture-o
 author:
-  name: Fredrik Ekelund
-  email: fredrik@fredrik.computer
-homepage: https://github.com/fredrikekelund/grav-plugin-resize-images
-keywords: images, responsive, srcset
-bugs: https://github.com/fredrikekelund/grav-plugin-resize-images/issues
-docs: https://github.com/fredrikekelund/grav-plugin-resize-images/blob/develop/README.md
+  name: Stéphane Guigné
+  email: contact@stephaneguigne.com
+homepage: https://github.com/guins/grav-plugin-resize-images
+keywords: images, responsive, srcset, resize, Imagick, GD, javascript, js, front-end, React, Angular, Vue
+bugs: https://github.com/guins/grav-plugin-resize-images/issues
+docs: https://github.com/guins/grav-plugin-resize-images/blob/master/README.md
 license: MIT
 
 form:
@@ -61,3 +61,8 @@ form:
           min: 0
           max: 100
           default: 82
+        .name:
+          type: text
+          label: Name
+          placeholder: THUMB
+          default: ''
