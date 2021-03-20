@@ -3,6 +3,7 @@ namespace Grav\Plugin;
 
 use Grav\Common\Plugin;
 use Grav\Common\Page\Page;
+use Grav\Common\Flex\Types\Pages\PageObject;
 use RocketTheme\Toolbox\Event\Event;
 
 require_once 'adapters/imagick.php';
@@ -102,7 +103,7 @@ class ResizeImagesPlugin extends Plugin
     {
         $page = $event['object'];
 
-        if (!$page instanceof Page) {
+        if (!($page instanceof Page || $page instanceof PageObject)) {
             return false;
         }
 
