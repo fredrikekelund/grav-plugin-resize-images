@@ -6,6 +6,10 @@ use Grav\Common\Page\Page;
 use Grav\Common\Flex\Types\Pages\PageObject;
 use RocketTheme\Toolbox\Event\Event;
 
+use Grav\Common\Data;
+use Grav\Common\Grav;
+use PHPHtmlParser\Dom;
+
 require_once 'adapters/imagick.php';
 require_once 'adapters/gd.php';
 
@@ -31,7 +35,9 @@ class ResizeImagesPlugin extends Plugin
     public static function getSubscribedEvents()
     {
         return [
-            'onAdminSave' => ['onAdminSave', 0]
+            'onAdminSave' => ['onAdminSave', 0],
+            //'onPageContentProcessed' => ['onPageContentProcessed', 0]
+            'onOutputGenerated' => ['onOutputGenerated', 0]
         ];
     }
 
@@ -166,6 +172,50 @@ class ResizeImagesPlugin extends Plugin
             }
 
             $this->grav['admin']->setMessage($message, 'info');
+        }
+    }
+
+    /**
+     * Iterates over images in page content and rewrites paths
+     * Shamelessly copied from OleVik's Image Srcset plugin (and adapted)!
+     *
+     * @return void
+     */
+    public function onOutputGenerated()
+    {
+        if ($this->isAdmin()) {
+            return;
+        }
+        $config = (array) $this->config->get('plugins.resize-images');
+        $page = $this->grav['page'];
+        $config = $this->mergeConfig($page); 
+        if ($config['enabled']) {
+            include __DIR__ . '/vendor/autoload.php';
+            $dom = new Dom;
+            $dom->load($this->grav->output);
+            $images = $dom->find('img');
+            $arrClasses = [];
+            foreach ($config['sizesattr'] as $array) {
+                $arrClasses[$array['class']] = $array['directive'];
+            }
+            foreach ($images as $image) {
+                $sizesattr = "";
+                $classes = explode(" ", $image->getAttribute('class'));
+                foreach ($classes as $class) {
+                    if (array_key_exists($class, $arrClasses)) {
+                        $sizesattr = $arrClasses[$class];
+                    }
+                }
+                if ($sizesattr == "") {
+                    if (array_key_exists('default', $arrClasses)) {
+                        $sizesattr = $arrClasses['default'];
+                    }
+                }
+                if ($sizesattr != "") {
+                    $image->setAttribute('sizes', $sizesattr);
+                }
+            }
+            $this->grav->output = $dom->outerHtml;
         }
     }
 }

@@ -61,3 +61,16 @@ form:
           min: 0
           max: 100
           default: 82
+
+    sizesattr:
+      type: list
+      label: Sizes directive per class
+      btnLabel: Add size directive
+
+      fields:
+        .class:
+          type: text
+          label: class
+        .directive:
+          type: text
+          label: sizes attribute
