@@ -107,9 +107,9 @@ class ResizeImagesPlugin extends Plugin
      */
     public function onAdminSave($event)
     {
-        $page = $event['object'] ?? $event['page'];
+        $page = $event['object'];
 
-        if (!$page instanceof Page && !$page instanceof PageObject) {
+        if (!($page instanceof Page || $page instanceof PageObject)) {
             return false;
         }
 
