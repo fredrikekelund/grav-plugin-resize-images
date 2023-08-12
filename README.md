@@ -1,8 +1,6 @@
 # [Grav](http://getgrav.org) Resize Images Plugin
 
-**This plugin is still young! If you encounter any issues, please don't hesitate
-to [report
-them](https://github.com/fredrikekelund/grav-plugin-resize-images/issues).**
+**This plugin is unmaintained. Feel free to fork and continue development elsewhere.**
 
 > Resize images at upload time in the Grav admin
 
